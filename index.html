@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="star.css">
+</head>
+<body>
+    <div>
+        <span id="stars">
+            <span class="star" data-value="1">&#9733</span>
+            <span class="star" data-value="2">&#9733</span>
+            <span class="star" data-value="3">&#9733</span>
+            <span class="star" data-value="4">&#9733</span>
+            <span class="star" data-value="5">&#9733</span>
+        </span>
+        <p class="rating"></p>
+    </div>
+    <script>
+        const stars = document.querySelectorAll('.star');
+        const starCont = document.querySelector('#stars');
+        const rating = document.querySelector('.rating');
+        function reset(){
+            stars.forEach((star) => {
+                star.classList.remove('filled', 'filled-red');
+            })
+        }
+        const renderStars = (value, updateText = true) => {
+            if(updateText){
+                rating.innerText = `${value}/5`;  
+            }
+            for(let i = 1 ; i <= Number(value) ; i++){
+                    const el = starCont.querySelector(`:nth-child(${i})`);
+                    if(value <= 2){
+                        el.classList.add('filled-red');
+                    } else {
+                        el.classList.add('filled');
+                    }   
+                }
+        }
+        window.addEventListener('load' , () => {
+            const value = localStorage.getItem('rating-value');
+            if(!value){
+                return;
+            }
+            renderStars(Number(value));
+        })
+        stars.forEach((star) => {
+            star.addEventListener('mouseenter', (e) => {
+                reset();
+                const value = star.getAttribute('data-value');
+                renderStars(Number(value), false);
+            })
+        })
+        stars.forEach((star) => {
+            star.addEventListener('click', (e) => {
+                reset();
+                const value = star.getAttribute('data-value');
+                localStorage.setItem('rating-value', value)
+                renderStars(Number(value));
+            })
+        })
+    </script>
+</body>
+</html>
